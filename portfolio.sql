@@ -18,44 +18,52 @@ USE `portfolio` ;
 -- Table `portfolio`.`persona`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `portfolio`.`persona` (
-  `id` INT NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `apellido` VARCHAR(45) NOT NULL,
-  `fechaNac` DATE NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  `ID_PERSONA` INT NOT NULL AUTO_INCREMENT,
+  `fechaNac` VARCHAR(12) NOT NULL,
+  `nacionalidad` VARCHAR(45) NOT NULL,
+  `nombre` VARCHAR(35) NOT NULL,
+  `apellido` VARCHAR(35) NOT NULL,
+  `linkedin` VARCHAR(100) NOT NULL,
+  `github` VARCHAR(100) NOT NULL,
+  `facebook` VARCHAR(100) NOT NULL,
+  `portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PERSONA`, `portfolio_ID_PORTFOLIO`),
+  UNIQUE INDEX `idPersona_UNIQUE` (`ID_PERSONA` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `portfolio`.`url_img`
+-- Table `portfolio`.`portfolio`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`url_img` (
-  `id` INT NOT NULL,
-  `foto_perfil` VARCHAR(100) NOT NULL,
-  `background` VARCHAR(100) NOT NULL,
-  `facebook_logo` VARCHAR(100) NOT NULL,
-  `github_logo` VARCHAR(100) NOT NULL,
-  `linkedin_logo` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB
-COMMENT = '	';
+CREATE TABLE IF NOT EXISTS `portfolio`.`portfolio` (
+  `ID_PORTFOLIO` INT NOT NULL AUTO_INCREMENT,
+  `persona_ID_PERSONA` INT NOT NULL,
+  `persona_portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PORTFOLIO`, `persona_ID_PERSONA`, `persona_portfolio_ID_PORTFOLIO`),
+  UNIQUE INDEX `idPortfolio_UNIQUE` (`ID_PORTFOLIO` ASC) VISIBLE,
+  INDEX `fk_portfolio_persona1_idx` (`persona_ID_PERSONA` ASC, `persona_portfolio_ID_PORTFOLIO` ASC) VISIBLE,
+  CONSTRAINT `fk_portfolio_persona1`
+    FOREIGN KEY (`persona_ID_PERSONA` , `persona_portfolio_ID_PORTFOLIO`)
+    REFERENCES `portfolio`.`persona` (`ID_PERSONA` , `portfolio_ID_PORTFOLIO`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
 -- Table `portfolio`.`objetivos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `portfolio`.`objetivos` (
-  `id` INT NOT NULL,
-  `contenido` VARCHAR(200) NOT NULL,
-  `persona_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `persona_id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_objetivos_persona1_idx` (`persona_id` ASC) VISIBLE,
+  `ID_PERSONA` INT NOT NULL AUTO_INCREMENT,
+  `descripcion` VARCHAR(200) NOT NULL,
+  `persona_ID_PERSONA` INT NOT NULL,
+  `persona_portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PERSONA`, `persona_ID_PERSONA`, `persona_portfolio_ID_PORTFOLIO`),
+  UNIQUE INDEX `idObjetivos_UNIQUE` (`ID_PERSONA` ASC) VISIBLE,
+  INDEX `fk_objetivos_persona1_idx` (`persona_ID_PERSONA` ASC, `persona_portfolio_ID_PORTFOLIO` ASC) VISIBLE,
   CONSTRAINT `fk_objetivos_persona1`
-    FOREIGN KEY (`persona_id`)
-    REFERENCES `portfolio`.`persona` (`id`)
+    FOREIGN KEY (`persona_ID_PERSONA` , `persona_portfolio_ID_PORTFOLIO`)
+    REFERENCES `portfolio`.`persona` (`ID_PERSONA` , `portfolio_ID_PORTFOLIO`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -65,102 +73,56 @@ ENGINE = InnoDB;
 -- Table `portfolio`.`habilidades`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `portfolio`.`habilidades` (
-  `id` INT NOT NULL,
-  `contenido` VARCHAR(200) NOT NULL,
-  `persona_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `persona_id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_habilidades_persona1_idx` (`persona_id` ASC) VISIBLE,
+  `ID_PERSONA` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(100) NOT NULL,
+  `persona_ID_PERSONA` INT NOT NULL,
+  `persona_portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PERSONA`, `persona_ID_PERSONA`, `persona_portfolio_ID_PORTFOLIO`),
+  UNIQUE INDEX `idHabilidades_UNIQUE` (`ID_PERSONA` ASC) VISIBLE,
+  INDEX `fk_habilidades_persona1_idx` (`persona_ID_PERSONA` ASC, `persona_portfolio_ID_PORTFOLIO` ASC) VISIBLE,
   CONSTRAINT `fk_habilidades_persona1`
-    FOREIGN KEY (`persona_id`)
-    REFERENCES `portfolio`.`persona` (`id`)
+    FOREIGN KEY (`persona_ID_PERSONA` , `persona_portfolio_ID_PORTFOLIO`)
+    REFERENCES `portfolio`.`persona` (`ID_PERSONA` , `portfolio_ID_PORTFOLIO`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `portfolio`.`formacion_academica`
+-- Table `portfolio`.`formacionAcademica`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`formacion_academica` (
-  `id` INT NOT NULL,
-  `contenido` VARCHAR(200) NOT NULL,
-  `persona_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `persona_id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  INDEX `fk_formacion_academica_persona1_idx` (`persona_id` ASC) VISIBLE,
-  CONSTRAINT `fk_formacion_academica_persona1`
-    FOREIGN KEY (`persona_id`)
-    REFERENCES `portfolio`.`persona` (`id`)
+CREATE TABLE IF NOT EXISTS `portfolio`.`formacionAcademica` (
+  `ID_PERSONA` INT NOT NULL AUTO_INCREMENT,
+  `institucion` VARCHAR(100) NOT NULL,
+  `inicio` VARCHAR(12) NOT NULL,
+  `fin` VARCHAR(12) NOT NULL,
+  `url` VARCHAR(100) NOT NULL,
+  `persona_ID_PERSONA` INT NOT NULL,
+  `persona_portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PERSONA`, `persona_ID_PERSONA`, `persona_portfolio_ID_PORTFOLIO`),
+  INDEX `fk_formacionAcademica_persona1_idx` (`persona_ID_PERSONA` ASC, `persona_portfolio_ID_PORTFOLIO` ASC) VISIBLE,
+  CONSTRAINT `fk_formacionAcademica_persona1`
+    FOREIGN KEY (`persona_ID_PERSONA` , `persona_portfolio_ID_PORTFOLIO`)
+    REFERENCES `portfolio`.`persona` (`ID_PERSONA` , `portfolio_ID_PORTFOLIO`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `portfolio`.`header`
+-- Table `portfolio`.`urlFotos`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`header` (
-  `id` INT NOT NULL,
-  `foto_perfil` VARCHAR(100) NOT NULL,
-  `background` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `portfolio`.`header_tiene_url_img`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`header_tiene_url_img` (
-  `header_id` INT NOT NULL,
-  `url_img_id` INT NOT NULL,
-  PRIMARY KEY (`header_id`, `url_img_id`),
-  INDEX `fk_header_has_url_img_url_img1_idx` (`url_img_id` ASC) VISIBLE,
-  INDEX `fk_header_has_url_img_header_idx` (`header_id` ASC) VISIBLE,
-  CONSTRAINT `fk_header_has_url_img_header`
-    FOREIGN KEY (`header_id`)
-    REFERENCES `portfolio`.`header` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_header_has_url_img_url_img1`
-    FOREIGN KEY (`url_img_id`)
-    REFERENCES `portfolio`.`url_img` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `portfolio`.`logos`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`logos` (
-  `id` INT NOT NULL,
-  `facebook_logo` VARCHAR(100) NOT NULL,
-  `linkedin_logo` VARCHAR(100) NOT NULL,
-  `github_logo` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `portfolio`.`logos_tiene_url_img`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `portfolio`.`logos_tiene_url_img` (
-  `logos_id` INT NOT NULL,
-  `url_img_id` INT NOT NULL,
-  PRIMARY KEY (`logos_id`, `url_img_id`),
-  INDEX `fk_logos_has_url_img_url_img1_idx` (`url_img_id` ASC) VISIBLE,
-  INDEX `fk_logos_has_url_img_logos1_idx` (`logos_id` ASC) VISIBLE,
-  CONSTRAINT `fk_logos_has_url_img_logos1`
-    FOREIGN KEY (`logos_id`)
-    REFERENCES `portfolio`.`logos` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_logos_has_url_img_url_img1`
-    FOREIGN KEY (`url_img_id`)
-    REFERENCES `portfolio`.`url_img` (`id`)
+CREATE TABLE IF NOT EXISTS `portfolio`.`urlFotos` (
+  `ID_PERSONA` INT NOT NULL AUTO_INCREMENT,
+  `direccion` VARCHAR(200) NOT NULL,
+  `descripcion` VARCHAR(100) NOT NULL,
+  `portfolio_ID_PORTFOLIO` INT NOT NULL,
+  PRIMARY KEY (`ID_PERSONA`, `portfolio_ID_PORTFOLIO`),
+  UNIQUE INDEX `idUrlFotos_UNIQUE` (`ID_PERSONA` ASC) VISIBLE,
+  INDEX `fk_urlFotos_portfolio_idx` (`portfolio_ID_PORTFOLIO` ASC) VISIBLE,
+  CONSTRAINT `fk_urlFotos_portfolio`
+    FOREIGN KEY (`portfolio_ID_PORTFOLIO`)
+    REFERENCES `portfolio`.`portfolio` (`ID_PORTFOLIO`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
